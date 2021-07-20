@@ -276,6 +276,7 @@ impl ApmLayer {
         let mut metadata = self.metadata.clone();
         println!("visitor was {:?}", visitor.0);
         println!("metadata was {:?}", meta);
+        println!("self metadata was {:?}", metadata);
         if !visitor.0.is_empty() {
             metadata["labels"] = json!(visitor.0);
             metadata["labels"]["level"] = json!(meta.level().to_string());
