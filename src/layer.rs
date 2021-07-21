@@ -278,11 +278,14 @@ impl ApmLayer {
         println!("metadata was {:?}", meta);
         println!("self metadata was {:?}", metadata);
         if !visitor.0.is_empty() {
-            metadata["labels"] = json!(visitor.0);
+            for (key,val) in visitor.0.iter() {
+                metadata[key] = val.clone()
+            }
+            metadata["name"] = json!(format!("{} {}",visitor.0["http.method"],visitor.0["http.route"]));
+            metadata["type"] = json!("request".to_string());
             metadata["labels"]["level"] = json!(meta.level().to_string());
             metadata["labels"]["target"] = json!(meta.target().to_string());
         }
-
         metadata
     }
 }
