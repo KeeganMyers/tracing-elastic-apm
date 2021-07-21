@@ -38,7 +38,6 @@ where
     S: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn new_span(&self, attrs: &Attributes<'_>, id: &Id, ctx: Context<'_, S>) {
-        println!("new span called {:?}", id);
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -98,7 +97,6 @@ where
     }
 
     fn on_record(&self, span: &Id, values: &Record<'_>, ctx: Context<'_, S>) {
-        println!("on record called {:?}", span);
         let span = ctx.span(span).expect("Span not found!");
         let mut extensions = span.extensions_mut();
 
@@ -109,7 +107,6 @@ where
     }
 
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
-        println!("on event called {:?}", event);
         let metadata = event.metadata();
         if metadata.level() != &Level::ERROR {
             return;
@@ -163,7 +160,6 @@ where
     }
 
     fn on_enter(&self, id: &Id, ctx: Context<'_, S>) {
-        println!("on enter called {:?}", id);
         let span = ctx.span(id).expect("Span not found!");
         let mut extensions = span.extensions_mut();
 
@@ -175,7 +171,6 @@ where
     }
 
     fn on_exit(&self, id: &Id, ctx: Context<'_, S>) {
-        println!("on exit called {:?}", id);
         let timestamp = Instant::now();
         let span = ctx.span(id).expect("Span not found!");
         let mut extensions = span.extensions_mut();
@@ -188,7 +183,6 @@ where
     }
 
     fn on_close(&self, id: Id, ctx: Context<'_, S>) {
-        println!("on close called {:?}", id);
         let span = ctx.span(&id).expect("Span not found!");
         let mut extensions = span.extensions_mut();
         let visitor = extensions
