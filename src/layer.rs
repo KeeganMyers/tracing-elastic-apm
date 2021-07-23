@@ -84,7 +84,7 @@ where
 
             let new_transaction = Transaction {
                 id: id.into_u64().to_string(),
-                transaction_type: "custom".to_string(),
+                transaction_type: "request".to_string(),
                 trace_id: trace_ctx.trace_id.to_string(),
                 timestamp: Some(now),
                 name: Some(name),
@@ -275,7 +275,9 @@ impl ApmLayer {
             for (key,val) in visitor.0.iter() {
                 metadata[key] = val.clone()
             }
-            metadata["name"] = json!(format!("{} {}",visitor.0["http.method"],visitor.0["http.route"]));
+            if let (Some(method), Some(route)) = (visitor.0.get("http.method"), visitor.0.get("http.route")) {
+             metadata["name"] = json!(format!("{} {}",method,route));
+            }
             metadata["type"] = json!("request".to_string());
             metadata["labels"]["level"] = json!(meta.level().to_string());
             metadata["labels"]["target"] = json!(meta.target().to_string());
