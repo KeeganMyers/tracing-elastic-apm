@@ -268,9 +268,6 @@ impl ApmLayer {
         meta: &'static tracing::Metadata<'static>,
     ) -> Value {
         let mut metadata = self.metadata.clone();
-        println!("visitor was {:?}", visitor.0);
-        println!("metadata was {:?}", meta);
-        println!("self metadata was {:?}", metadata);
         if !visitor.0.is_empty() {
             for (key,val) in visitor.0.iter() {
                 metadata[key] = val.clone()
@@ -278,7 +275,6 @@ impl ApmLayer {
             if let (Some(method), Some(route)) = (visitor.0.get("http.method"), visitor.0.get("http.route")) {
              metadata["name"] = json!(format!("{} {}",method,route));
             }
-            metadata["type"] = json!("request".to_string());
             metadata["labels"]["level"] = json!(meta.level().to_string());
             metadata["labels"]["target"] = json!(meta.target().to_string());
         }
